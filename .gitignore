@@ -1,0 +1,22 @@
+/.gradle/
+
+build/
+/build
+*/build
+*/**/build
+
+target/
+/target
+*/target
+*/**/target
+
+bin/
+/bin
+*/bin
+*/**/bin
+
+# Eclipse artifacts, including WTP generated manifests
+.classpath
+.project
+.metadata
+.settings/
