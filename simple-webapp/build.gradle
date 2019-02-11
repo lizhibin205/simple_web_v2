@@ -3,11 +3,12 @@ buildscript {
 		springBootVersion = '2.1.2.RELEASE'
 	}
 	repositories {
-		mavenCentral()
+        mavenLocal()
+        mavenCentral()
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
 }
 
 apply plugin: 'java'
@@ -19,6 +20,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {
+    mavenLocal()
 	mavenCentral()
 }
 
