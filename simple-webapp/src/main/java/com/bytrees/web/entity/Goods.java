@@ -1,5 +1,7 @@
 package com.bytrees.web.entity;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,9 +10,11 @@ import javax.persistence.Id;
 @Entity
 public class Goods {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public Long getId() {
     	return id;
@@ -23,5 +27,17 @@ public class Goods {
     }
     public void setName(String name) {
     	this.name = name;
+    }
+    public Timestamp getCreateTime() {
+    	return createTime;
+    }
+    public void setCreateTime(Timestamp createTime) {
+    	this.createTime = createTime;
+    }
+    public Timestamp getUpdateTime() {
+    	return updateTime;
+    }
+    public void setUpdateTime(Timestamp updateTime) {
+    	this.updateTime = updateTime;
     }
 }
