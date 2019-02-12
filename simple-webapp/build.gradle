@@ -35,6 +35,6 @@ dependencies {
 	//implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	//implementation 'org.springframework.boot:spring-boot-starter-security'
 	//implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'com.h2database:h2'
+	implementation 'mysql:mysql-connector-java'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
