@@ -13,6 +13,7 @@ public class Goods {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Double price;
     private Timestamp createTime;
     private Timestamp updateTime;
 
@@ -27,6 +28,12 @@ public class Goods {
     }
     public void setName(String name) {
     	this.name = name;
+    }
+    public Double getPrice() {
+    	return price;
+    }
+    public void setPrice(Double price) {
+    	this.price = price;
     }
     public Timestamp getCreateTime() {
     	return createTime;
