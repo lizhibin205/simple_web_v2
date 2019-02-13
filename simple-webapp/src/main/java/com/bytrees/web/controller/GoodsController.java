@@ -1,5 +1,7 @@
 package com.bytrees.web.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,11 @@ public class GoodsController {
 	@Autowired
 	private GoodsRepository goodsRepository;
 
+	/**
+	 * 通过ID获取商品
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping(method=RequestMethod.GET, value="/goods/{id}")
     public ResponseEntity<ResponseJson<GoodsVO>> index(@PathVariable Long id) {
 		Optional<Goods> goods = goodsRepository.findById(id);
@@ -36,6 +43,11 @@ public class GoodsController {
 		return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess.", goodsVO), HttpStatus.OK);
     }
 
+	/**
+	 * 添加商品
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(method=RequestMethod.POST, value="/goods/add")
 	public ResponseEntity<ResponseJson<String>> add(HttpServletRequest request) {
 		String name = request.getParameter("name");
@@ -48,6 +60,12 @@ public class GoodsController {
 		return new ResponseEntity<>(new ResponseJson<String>(200, "sucess.", null), HttpStatus.OK);
 	}
 
+	/**
+	 * 编辑商品
+	 * @param goodsId
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(method=RequestMethod.POST, value="/goods/{goodsId}/edit")
 	public ResponseEntity<ResponseJson<String>> edit(@PathVariable Long goodsId, HttpServletRequest request) {
 		String name = request.getParameter("name");
@@ -66,9 +84,39 @@ public class GoodsController {
 		return new ResponseEntity<>(new ResponseJson<String>(200, "sucess.", null), HttpStatus.OK);
 	}
 
+	/**
+	 * 删除商品
+	 * @param goodsId
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(method=RequestMethod.POST, value="/goods/{goodsId}/delete")
 	public ResponseEntity<ResponseJson<String>> delete(@PathVariable Long goodsId, HttpServletRequest request) {
 		goodsRepository.deleteById(goodsId);
 		return new ResponseEntity<>(new ResponseJson<String>(200, "sucess.", null), HttpStatus.OK);
+	}
+
+	@RequestMapping(method=RequestMethod.GET, value="/goods/searchByPrice")
+	public ResponseEntity<ResponseJson<List<GoodsVO>>> searchByPrice(HttpServletRequest request) {
+		Double startPrice = 0.0,endPrice = 0.0;
+		try {
+			startPrice = Double.parseDouble(request.getParameter("startPrice"));
+			endPrice = Double.parseDouble(request.getParameter("endPrice"));
+		} catch (Exception ex) {
+			return new ResponseEntity<>(new ResponseJson<List<GoodsVO>>(500, "price param error.", null), HttpStatus.OK);
+		}
+		if (endPrice <= startPrice) {
+			return new ResponseEntity<>(new ResponseJson<List<GoodsVO>>(500, "endPrice less than startPrice.", null), HttpStatus.OK);
+		}
+		List<Goods> goodsList = goodsRepository.findByPriceBetween(startPrice, endPrice);
+		List<GoodsVO> goodsVOList = new ArrayList<GoodsVO>();
+		if (!goodsList.isEmpty()) {
+			for (Goods goods : goodsList) {
+				GoodsVO goodsVO = new GoodsVO();
+				BeanUtils.copyProperties(goods, goodsVO);
+				goodsVOList.add(goodsVO);
+			}
+		}
+		return new ResponseEntity<>(new ResponseJson<List<GoodsVO>>(200, "sucess.", goodsVOList), HttpStatus.OK);
 	}
 }

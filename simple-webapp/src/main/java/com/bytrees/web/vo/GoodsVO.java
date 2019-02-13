@@ -5,6 +5,7 @@ import java.util.Date;
 public class GoodsVO {
     private Long id;
     private String name;
+    private Double price;
     private Date createTime;
     private Date updateTime;
 
@@ -14,21 +15,24 @@ public class GoodsVO {
     public void setId(Long id) {
     	this.id = id;
     }
-
     public String getName() {
     	return name;
     }
     public void setName(String name) {
     	this.name = name;
     }
-
+    public Double getPrice() {
+    	return price;
+    }
+    public void setPrice(Double price) {
+    	this.price = price;
+    }
     public Date getCreateTime() {
     	return createTime;
     }
     public void setCreateTime(Date createTime) {
     	this.createTime = createTime;
     }
-
     public Date getUpdateTime() {
     	return updateTime;
     }
