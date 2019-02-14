@@ -1,13 +1,9 @@
 package com.bytrees.web.vo;
 
-import java.util.Date;
-
 public class GoodsVO {
     private Long id;
     private String name;
     private Double price;
-    private Date createTime;
-    private Date updateTime;
 
     public Long getId() {
     	return id;
@@ -26,17 +22,5 @@ public class GoodsVO {
     }
     public void setPrice(Double price) {
     	this.price = price;
-    }
-    public Date getCreateTime() {
-    	return createTime;
-    }
-    public void setCreateTime(Date createTime) {
-    	this.createTime = createTime;
-    }
-    public Date getUpdateTime() {
-    	return updateTime;
-    }
-    public void setUpdateTime(Date updateTime) {
-    	this.updateTime = updateTime;
     }
 }
