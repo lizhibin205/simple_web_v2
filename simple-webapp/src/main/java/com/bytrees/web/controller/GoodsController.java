@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bytrees.web.entity.Goods;
 import com.bytrees.web.repository.GoodsRepository;
 import com.bytrees.web.utils.ResponseJson;
+import com.bytrees.web.vo.GoodsPageableVO;
 import com.bytrees.web.vo.GoodsVO;
 
 @RestController
@@ -105,20 +106,20 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping(method=RequestMethod.GET, value="/goods/list")
-	public ResponseEntity<ResponseJson<List<GoodsVO>>> list(HttpServletRequest request) {
+	public ResponseEntity<ResponseJson<GoodsPageableVO>> list(HttpServletRequest request) {
 		int page = 1;
 		try {
 			page = Integer.parseInt(request.getParameter("page"));
 		} catch (Exception ex) {
-			return new ResponseEntity<>(new ResponseJson<List<GoodsVO>>(500, "page param error.", null), HttpStatus.OK);
+			return new ResponseEntity<>(new ResponseJson<GoodsPageableVO>(500, "page param error.", null), HttpStatus.OK);
 		}
 		if (page < 1) {
 			page = 1;
 		}
 		Pageable pageable = PageRequest.of(page - 1, 1);
 		Page<Goods> goodsPage = goodsRepository.findAll(pageable);
-		List<GoodsVO> goodsVOList = changeGoodsListToGoodsVOList(goodsPage.getContent());
-		return new ResponseEntity<>(new ResponseJson<List<GoodsVO>>(200, "sucess.", goodsVOList), HttpStatus.OK);
+		GoodsPageableVO goodsPageableVO = new GoodsPageableVO(page, 1, changeGoodsListToGoodsVOList(goodsPage.getContent()));
+		return new ResponseEntity<>(new ResponseJson<GoodsPageableVO>(200, "sucess.", goodsPageableVO), HttpStatus.OK);
 	}
 
 	/**
