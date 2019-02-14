@@ -21,7 +21,7 @@ public class OrderGoods {
     private Timestamp createTime;
     private Timestamp updateTime;
     @ManyToOne(cascade=CascadeType.ALL, optional=false, targetEntity=Orders.class)
-    @JoinColumn(name="orderId", nullable=false, insertable = false, updatable = false)
+    @JoinColumn(name="orderId", nullable=false)
     private Orders orderId;
 
     public Long getId() {

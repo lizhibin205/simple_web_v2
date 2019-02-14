@@ -46,6 +46,51 @@ public class OrdersController {
     }
 
 	/**
+	 * 创建订单
+	 * @return
+	 */
+	@RequestMapping(method=RequestMethod.GET, value="/orders/create")
+	public ResponseEntity<ResponseJson<String>> create() {
+		//模拟订单
+		Orders orders = new Orders();
+		orders.setOrderNumber("A20190214973");
+		orders.setTotalPrice(100.0);
+
+		List<OrderGoods> orderGoodsList = new ArrayList<OrderGoods>();
+		OrderGoods oGoods = new OrderGoods();
+		//这步很关键，不然插入商品记录时，order_id=null导致执行失败
+		oGoods.setOrderId(orders);
+		oGoods.setGoodsId(5L);
+		oGoods.setPrice(50.0);
+		oGoods.setNumber(2);
+		orderGoodsList.add(oGoods);
+		orders.setOrderGoodsList(orderGoodsList);
+
+		//保存
+		ordersRepository.save(orders);
+
+		return new ResponseEntity<>(new ResponseJson<String>(200, "sucess.", null), HttpStatus.OK);
+	}
+
+	/**
+	 * 删除订单
+	 * @return
+	 */
+	@RequestMapping(method=RequestMethod.GET, value="/orders/{orderId}/delete")
+	public ResponseEntity<ResponseJson<String>> delete(@PathVariable Long orderId) {
+		Optional<Orders> order = ordersRepository.findById(orderId);
+		if (!order.isPresent()) {
+			return new ResponseEntity<>(new ResponseJson<String>(500, "order id=" + orderId + " not found.", null)
+					, HttpStatus.OK);
+		}
+
+		//删除行为
+		ordersRepository.deleteById(orderId);
+
+		return new ResponseEntity<>(new ResponseJson<String>(200, "sucess.", null), HttpStatus.OK);
+	}
+
+	/**
 	 * 类型转换
 	 * @param goodsList
 	 * @return
