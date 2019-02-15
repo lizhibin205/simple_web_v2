@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.bytrees.web.entity.Goods;
 
+
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
 	List<Goods> findByPriceBetweenOrderByPriceAsc(Double startPrice, Double endPrice);
 	Page<Goods> findByPriceBetweenOrderByPriceAsc(Double startPrice, Double endPrice, Pageable pageable);

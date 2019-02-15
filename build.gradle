@@ -1,12 +1,23 @@
+buildscript {
+	ext {
+		springBootVersion = '2.1.2.RELEASE'
+	}
+	repositories {
+        mavenLocal()
+        mavenCentral()
+	}
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 
-    group = 'com.bytrees'
-    version = '0.0.1-SNAPSHOT'
-
     sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     // java编译的时候缺省状态下会因为中文字符而失败
     [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
