@@ -1,4 +1,4 @@
 rootProject.name = 'simple'
 include 'simple-webapp'
-include 'simple-service'
-include 'simple-job'
+//include 'simple-service'
+//include 'simple-job'
