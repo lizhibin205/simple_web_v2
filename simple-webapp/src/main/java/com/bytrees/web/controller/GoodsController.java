@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bytrees.web.entity.Goods;
-import com.bytrees.web.repository.GoodsRepository;
+import com.bytrees.service.entity.Goods;
+import com.bytrees.service.repository.GoodsRepository;
 import com.bytrees.web.utils.ResponseJson;
 import com.bytrees.web.vo.GoodsPageableVO;
 import com.bytrees.web.vo.GoodsVO;

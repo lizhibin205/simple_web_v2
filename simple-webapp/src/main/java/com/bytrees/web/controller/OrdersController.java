@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bytrees.web.entity.OrderGoods;
-import com.bytrees.web.entity.Orders;
-import com.bytrees.web.repository.OrdersRepository;
+import com.bytrees.service.entity.OrderGoods;
+import com.bytrees.service.entity.Orders;
+import com.bytrees.service.repository.OrdersRepository;
 import com.bytrees.web.utils.ResponseJson;
 import com.bytrees.web.vo.OrderGoodsVO;
 import com.bytrees.web.vo.OrdersVO;
