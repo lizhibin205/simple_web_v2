@@ -1,4 +1,4 @@
-package com.bytrees.web.entity;
+package com.bytrees.service.entity;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
