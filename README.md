@@ -9,6 +9,9 @@
 # 快速开始
 1. simple-webapp项目
 
+* 快速配置，[webapp项目配置](https://github.com/lizhibin205/simple_web_v2/wiki/webapp%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE)
+
+* 启动项目
 ```
 gradlew simple-webapp:bootRun
 ```
