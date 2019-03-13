@@ -29,7 +29,5 @@ subprojects {
 
     dependencies {
         testCompile 'junit:junit:4.12'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 }
