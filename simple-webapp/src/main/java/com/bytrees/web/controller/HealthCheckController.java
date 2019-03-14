@@ -1,5 +1,7 @@
 package com.bytrees.web.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +12,15 @@ import com.bytrees.web.utils.ResponseJson;
 
 @RestController
 public class HealthCheckController {
+	private final static Logger logger = LoggerFactory.getLogger(HealthCheckController.class); 
+	
     @RequestMapping(method=RequestMethod.GET, value="/healthCheck")
     public ResponseEntity<ResponseJson<String>> index() {
-    	return new ResponseEntity<>(new ResponseJson<String>(200, "sucess.", null), HttpStatus.OK);
+    	try {
+    		logger.info("healthCheck request.");
+    		return new ResponseEntity<>(new ResponseJson<String>(200, "sucess.", null), HttpStatus.OK);
+    	} catch (Exception ex) {
+    		return new ResponseEntity<>(new ResponseJson<String>(500, ex.getMessage(), null), HttpStatus.OK);
+    	}
     }
 }
