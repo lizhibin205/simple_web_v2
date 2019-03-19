@@ -12,7 +12,11 @@
   </head>
 <body>
      <div class="container">
-      welcome! <button onclick="logout();"> logout</button>
+      <p>welcome, <span th:text="${userName}">guest</span>! <button onclick="logout();"> logout</button></p>
+      <p>your authority list:</p>
+      <ul>
+         <li th:each="auth,index:${authorityList}" th:text="${auth.getAuthority()}"></li>
+      </ul>
       </div>
 <form th:action="@{/user/logout}" method="post" id="logoutForm" style="display:none;"></form>
 <script type="text/javascript">

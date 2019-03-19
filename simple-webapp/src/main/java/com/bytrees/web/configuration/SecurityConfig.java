@@ -5,10 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.bytrees.web.security.BytreesUserDetailService;
 
 @Configuration
 @EnableWebSecurity
@@ -31,15 +32,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+	public PasswordEncoder passwordEncoder(){
+    	return new BCryptPasswordEncoder();
+	}
+
+    @Bean
     @Override
     public UserDetailsService userDetailsService() {
-        UserDetails user =
-             User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user);
+    	//固定的账号密码是不安全的，spring不建议生产环境这样使用
+        //UserDetails user =
+        //     User.withDefaultPasswordEncoder()
+        //       .username("user")
+        //        .password("password")
+        //        .roles("USER")
+        //        .build();
+        //return new InMemoryUserDetailsManager(user);
+    	return new BytreesUserDetailService();
     }
 }
