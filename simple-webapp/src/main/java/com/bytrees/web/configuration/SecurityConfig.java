@@ -1,5 +1,8 @@
 package com.bytrees.web.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,11 +20,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	//配置用户权限验证规则
-        http
-            .authorizeRequests()
-                .antMatchers("/user", "/user/").authenticated()
-                .and()
-            .formLogin()
+    	//http.authorizeRequests().antMatchers("/user", "/user/").authenticated();
+    	for (String url: getAuthenticatedRequests()) {
+    		http.authorizeRequests().mvcMatchers(url).authenticated();
+    	}
+
+        http.formLogin()
                 .loginPage("/user/login")
                 .defaultSuccessUrl("/user")
                 .permitAll()
@@ -48,5 +52,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //        .build();
         //return new InMemoryUserDetailsManager(user);
     	return new BytreesUserDetailService();
+    }
+
+    /**
+     * 配置：需要验证权限的url
+     * 使用mvcMatchers风格
+     * @return
+     */
+    private List<String> getAuthenticatedRequests() {
+    	List<String> requestList = new ArrayList<String>();
+    	requestList.add("/user");
+    	return requestList;
     }
 }
