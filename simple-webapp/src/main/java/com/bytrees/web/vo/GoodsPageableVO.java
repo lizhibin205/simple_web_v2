@@ -2,6 +2,9 @@ package com.bytrees.web.vo;
 
 import java.util.List;
 
+import lombok.Data;
+
+@Data
 public class GoodsPageableVO {
 	private Integer page;
 	private Integer pageSize;
@@ -10,14 +13,5 @@ public class GoodsPageableVO {
     	this.page = page;
     	this.pageSize = pageSize;
     	this.list = list;
-    }
-    public Integer getPage() {
-    	return page;
-    }
-    public Integer getPageSize() {
-    	return pageSize;
-    }
-    public List<GoodsVO> getList() {
-    	return list;
     }
 }
