@@ -1,14 +1,17 @@
 package com.bytrees.web.controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -29,6 +32,9 @@ public class GoodsController {
 	@Autowired
 	private GoodsRepository goodsRepository;
 
+	@Autowired
+    private RedisTemplate<Serializable, Object> redisTemplate;
+
 	/**
 	 * 通过ID获取商品
 	 * @param id
@@ -36,6 +42,13 @@ public class GoodsController {
 	 */
 	@RequestMapping(method=RequestMethod.GET, value="/goods/{id}")
     public ResponseEntity<ResponseJson<GoodsVO>> index(@PathVariable Long id) {
+		//read from redis
+		GoodsVO goodsVORedis = (GoodsVO)redisTemplate.opsForValue().get("bytrees:goods:" + id.toString());
+		if (goodsVORedis instanceof GoodsVO) {
+			return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess(from cache).", goodsVORedis), HttpStatus.OK);
+		}
+
+		//read from mysql
 		Optional<Goods> goods = goodsRepository.findById(id);
 		if (!goods.isPresent()) {
 			return new ResponseEntity<>(new ResponseJson<GoodsVO>(404, "goods id=" + id + " not found.", null)
@@ -44,6 +57,8 @@ public class GoodsController {
 		}
 		GoodsVO goodsVO = new GoodsVO();
 		BeanUtils.copyProperties(goods.get(), goodsVO);
+		//set cache
+		redisTemplate.opsForValue().set("bytrees:goods:" + id.toString(), goodsVO, 10, TimeUnit.SECONDS);
 		return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess.", goodsVO), HttpStatus.OK);
     }
 
