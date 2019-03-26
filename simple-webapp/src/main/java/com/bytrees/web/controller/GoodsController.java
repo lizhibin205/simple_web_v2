@@ -48,17 +48,25 @@ public class GoodsController {
 			return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess(from cache).", goodsVORedis), HttpStatus.OK);
 		}
 
-		//read from mysql
-		Optional<Goods> goods = goodsRepository.findById(id);
-		if (!goods.isPresent()) {
-			return new ResponseEntity<>(new ResponseJson<GoodsVO>(404, "goods id=" + id + " not found.", null)
-					, HttpStatus.NOT_FOUND);
-			
+		GoodsVO goodsVO = null;
+		synchronized (this) {
+			GoodsVO goodsVORedisSync = (GoodsVO)redisTemplate.opsForValue().get("bytrees:goods:" + id.toString());
+			if (goodsVORedisSync instanceof GoodsVO) {
+				return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess(from cache).", goodsVORedisSync), HttpStatus.OK);
+			}
+			//read from mysql
+			Optional<Goods> goods = goodsRepository.findById(id);
+			if (!goods.isPresent()) {
+				return new ResponseEntity<>(new ResponseJson<GoodsVO>(404, "goods id=" + id + " not found.", null)
+						, HttpStatus.NOT_FOUND);
+				
+			}
+			goodsVO = new GoodsVO();
+			BeanUtils.copyProperties(goods.get(), goodsVO);
+			//set cache
+			redisTemplate.opsForValue().set("bytrees:goods:" + id.toString(), goodsVO, 10, TimeUnit.SECONDS);
 		}
-		GoodsVO goodsVO = new GoodsVO();
-		BeanUtils.copyProperties(goods.get(), goodsVO);
-		//set cache
-		redisTemplate.opsForValue().set("bytrees:goods:" + id.toString(), goodsVO, 10, TimeUnit.SECONDS);
+
 		return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess.", goodsVO), HttpStatus.OK);
     }
 
