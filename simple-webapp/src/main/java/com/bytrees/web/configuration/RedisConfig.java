@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.serializer.support.DeserializingConverter;
 import org.springframework.core.serializer.support.SerializingConverter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -15,6 +14,11 @@ import com.bytrees.cache.redis.ObjectRedisSerializer;
 
 @Configuration
 public class RedisConfig {
+	/**
+	 * 
+	 * @param connectionFactory
+	 * @return
+	 */
 	@Bean
     public RedisTemplate<Serializable, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
 		RedisTemplate<Serializable, Object> template = new RedisTemplate<Serializable, Object>();
