@@ -7,8 +7,11 @@ import lombok.Data;
 @Data
 public class GoodsVO implements Serializable {
 	private static final long serialVersionUID = 1L;
-
 	private Long id;
 	private String name;
 	private Double price;
+
+	public boolean empty() {
+		return id == null;
+	}
 }
