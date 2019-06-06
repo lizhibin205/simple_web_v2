@@ -37,37 +37,53 @@ public class GoodsController {
 
 	/**
 	 * 通过ID获取商品
+	 * 高并发获取商品信息
 	 * @param id
 	 * @return
 	 */
 	@RequestMapping(method=RequestMethod.GET, value="/goods/{id}")
     public ResponseEntity<ResponseJson<GoodsVO>> index(@PathVariable Long id) {
-		//read from redis
-		GoodsVO goodsVORedis = (GoodsVO)redisTemplate.opsForValue().get("bytrees:goods:" + id.toString());
-		if (goodsVORedis instanceof GoodsVO) {
-			return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess(from cache).", goodsVORedis), HttpStatus.OK);
+		//过滤非法入参
+		if (id < 1) {
+			return new ResponseEntity<>(new ResponseJson<GoodsVO>(500, "error goods id.", null), HttpStatus.OK);
 		}
 
-		GoodsVO goodsVO = null;
+		//从redis中获取数据
+		GoodsVO goodsVORedis = (GoodsVO)redisTemplate.opsForValue().get("bytrees:goods:" + id.toString());
+		if (goodsVORedis instanceof GoodsVO) {
+			if (goodsVORedis.empty()) {
+				return new ResponseEntity<>(new ResponseJson<GoodsVO>(404, "not exists(from cache).", null), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess(from cache).", goodsVORedis), HttpStatus.OK);
+			}
+		}
+
+		//双重验证锁
+		GoodsVO goodsVO = new GoodsVO();
 		synchronized (this) {
 			GoodsVO goodsVORedisSync = (GoodsVO)redisTemplate.opsForValue().get("bytrees:goods:" + id.toString());
 			if (goodsVORedisSync instanceof GoodsVO) {
-				return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess(from cache).", goodsVORedisSync), HttpStatus.OK);
+				if (goodsVORedisSync.empty()) {
+					return new ResponseEntity<>(new ResponseJson<GoodsVO>(404, "not exists(from cache:2).", null), HttpStatus.OK);
+				} else {
+					return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess(from cache:2).", goodsVORedisSync), HttpStatus.OK);
+				}
 			}
-			//read from mysql
+			//从数据库中获取数据
 			Optional<Goods> goods = goodsRepository.findById(id);
 			if (!goods.isPresent()) {
-				return new ResponseEntity<>(new ResponseJson<GoodsVO>(404, "goods id=" + id + " not found.", null)
-						, HttpStatus.NOT_FOUND);
-				
+				redisTemplate.opsForValue().set("bytrees:goods:" + id.toString(), goodsVO, 10, TimeUnit.SECONDS);
+			} else {
+				BeanUtils.copyProperties(goods.get(), goodsVO);
+				redisTemplate.opsForValue().set("bytrees:goods:" + id.toString(), goodsVO, 10, TimeUnit.SECONDS);
 			}
-			goodsVO = new GoodsVO();
-			BeanUtils.copyProperties(goods.get(), goodsVO);
-			//set cache
-			redisTemplate.opsForValue().set("bytrees:goods:" + id.toString(), goodsVO, 10, TimeUnit.SECONDS);
 		}
 
-		return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess.", goodsVO), HttpStatus.OK);
+		if (goodsVO.empty()) {
+			return new ResponseEntity<>(new ResponseJson<GoodsVO>(404, "not exists.", null), HttpStatus.OK);
+		} else {
+		    return new ResponseEntity<>(new ResponseJson<GoodsVO>(200, "sucess.", goodsVO), HttpStatus.OK);
+		}
     }
 
 	/**
